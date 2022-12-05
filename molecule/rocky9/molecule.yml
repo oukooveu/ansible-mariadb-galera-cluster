@@ -32,5 +32,6 @@ provisioner:
   playbooks:
     converge: ../shared/converge.yml
     prepare: ../shared/prepare.yml
+    side_effect: ../shared/side_effect.yml
 verifier:
   name: ansible
