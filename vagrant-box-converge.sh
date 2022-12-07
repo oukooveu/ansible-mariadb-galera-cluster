@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-#sudo systemctl restart chrony
+sudo systemctl restart chrony || true
 
 [ -f /vagrant_box_converged ] && exit 0
 
@@ -11,6 +11,7 @@ sudo apt purge unattended-upgrades -y
 
 sudo apt-get update && sudo apt-get upgrade -y
 sudo apt-get install -y \
+    chrony \
     ca-certificates \
     curl \
     gnupg \
@@ -35,5 +36,6 @@ sudo usermod -a -G docker vagrant
 python3 -m venv /home/vagrant/venv
 source /home/vagrant/venv/bin/activate
 pip install -r /vagrant/requirements.txt -r /vagrant/requirements-dev.txt
+sudo chown -R vagrant:vagrant /home/vagrant
 
 touch /vagrant_box_converged
