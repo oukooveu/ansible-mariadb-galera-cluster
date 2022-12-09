@@ -1,0 +1,38 @@
+---
+dependency:
+  name: galaxy
+  enabled: false
+  options:
+    role-file: requirements.yml
+driver:
+  name: podman
+lint: |
+  yamllint .
+  ansible-lint
+  flake8
+platforms:
+  - name: node1
+    image: ${MOLECULE_IMAGE:-mrlesmithjr/debian:11}
+    command: ${MOLECULE_DOCKER_COMMAND:-/lib/systemd/systemd}
+    systemd: true
+    network: molecule-galera
+    groups:
+      - galera-cluster-nodes
+  - name: node2
+    image: ${MOLECULE_IMAGE:-mrlesmithjr/debian:11}
+    command: ${MOLECULE_DOCKER_COMMAND:-/lib/systemd/systemd}
+    systemd: true
+    network: molecule-galera
+    groups:
+      - galera-cluster-nodes
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      callbacks_enabled: ansible.posix.profile_tasks
+  playbooks:
+    converge: ../shared/converge.yml
+    prepare: ../shared/prepare.yml
+    side_effect: ../shared/side_effect.yml
+verifier:
+  name: ansible
